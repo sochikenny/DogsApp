@@ -1,48 +1,37 @@
-import React from "react";
+import React from 'react';
 import { Link } from "react-router-dom";
-import "./style.css";
+import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
-// Depending on the current path, this component sets the "active" class on the appropriate navigation link item
-function Navbar() {
+const useStyles = makeStyles({
+  root: {
+    flexGrow: 1,
+  },
+});
+
+export default function Navbar() {
+  const classes = useStyles();
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <Link className="navbar-brand" to="/">
-        Pupster
-      </Link>
-      <div>
-        <ul className="navbar-nav">
-          <li className="nav-item">
-            <Link
-              to="/"
-              className={
-                window.location.pathname === "/" || window.location.pathname === "/about"
-                  ? "nav-link active"
-                  : "nav-link"
-              }
-            >
-              About
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link
-              to="/discover"
-              className={window.location.pathname === "/discover" ? "nav-link active" : "nav-link"}
-            >
-              Discover
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link
-              to="/search"
-              className={window.location.pathname === "/search" ? "nav-link active" : "nav-link"}
-            >
-              Search
-            </Link>
-          </li>
-        </ul>
-      </div>
-    </nav>
+    <Paper className={classes.root}>
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        indicatorColor="primary"
+        textColor="primary"
+        centered
+      >
+        <Link to="/"><Tab label="About" /></Link>
+        <Link to="/discover"><Tab label="Discover" /></Link>
+        <Link to="/search"><Tab label="Search" /></Link>
+      </Tabs>
+    </Paper>
   );
 }
-
-export default Navbar;
