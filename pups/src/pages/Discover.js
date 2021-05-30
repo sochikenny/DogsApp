@@ -1,31 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { Component } from "react";
 import API from "../utils/API";
 import Card from "../components/Card";
 import Alert from "../components/Alert";
 
-function Discover() {
-  const [image, setImage] = useState({
-    pics: "",
+class Discover extends Component {
+  state = {
+    image: "",
     match: false,
     matchCount: 0
-  })
-  // state = {
-  //   image: "",
-  //   match: false,
-  //   matchCount: 0
-  // };
+  };
 
   // When the component mounts, load the next dog to be displayed
-  useEffect(()=> {
-    loadNextDog()
-  }, [])
+  componentDidMount() {
+    this.loadNextDog();
+  }
 
-  const handleBtnClick = event => {
+  handleBtnClick = event => {
     // Get the data-value of the clicked button
     const btnType = event.target.attributes.getNamedItem("data-value").value;
     // Clone this.state to the newState object
     // We'll modify this object and use it to set our component's state
-    const newState = { ...image };
+    const newState = { ...this.state };
 
     if (btnType === "pick") {
       // Set newState.match to either true or false depending on whether or not the dog likes us (1/5 chance)
@@ -40,38 +35,37 @@ function Discover() {
       newState.match = false;
     }
     // Replace our component's state with newState, load the next dog image
-    setImage(newState);
-    loadNextDog();
+    this.setState(newState);
+    this.loadNextDog();
   };
 
-  const loadNextDog = () => {
+  loadNextDog = () => {
     API.getRandomDog()
       .then(res =>
-        setImage({
-          ...image, 
-          pics: res.data.message
+        this.setState({
+          image: res.data.message
         })
       )
       .catch(err => console.log(err));
   };
 
-  
+  render() {
     return (
       <div>
         <h1 className="text-center">Make New Friends</h1>
         <h3 className="text-center">
           Thumbs up on any pups you'd like to meet!
         </h3>
-        <Card image={image} handleBtnClick={handleBtnClick} />
+        <Card image={this.state.image} handleBtnClick={this.handleBtnClick} />
         <h1 className="text-center">
-          Made friends with {image.matchCount} pups so far!
+          Made friends with {this.state.matchCount} pups so far!
         </h1>
-        <Alert style={{ opacity: image.match ? 1 : 0 }} type="success">
+        <Alert style={{ opacity: this.state.match ? 1 : 0 }} type="success">
           Yay! That Pup Liked You Too!!!
         </Alert>
       </div>
     );
-  
+  }
 }
 
 export default Discover;
